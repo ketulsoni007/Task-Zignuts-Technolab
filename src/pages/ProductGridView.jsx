@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
+import { Grid2, Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useParams } from 'react-router-dom';
@@ -7,12 +7,11 @@ import { useParams } from 'react-router-dom';
 const ProductGridView = (props) => {
     const { products, handleHeartClick, heartClicked, navigate } = props;
     return (
-        <Grid container spacing={3}>
+        <Grid2 container spacing={3}>
             {products.map((product) => (
-                <Grid item xs={12} sm={6} md={4} key={product.id}>
+                <Grid2 item size={{ xs: 12, sm: 6, lg: 4 }} md={4} key={product.id}>
                     <Card onClick={() => navigate(`/product/${product.id}`)}>
                         <Box sx={{ position: 'relative' }}>
-                            {/* Heart Icon on Top Right */}
                             <Box
                                 sx={{
                                     position: 'absolute',
@@ -56,8 +55,6 @@ const ProductGridView = (props) => {
                                 }}
                             />
                         </Box>
-
-                        {/* Product Details */}
                         <CardContent>
                             <Typography
                                 gutterBottom
@@ -91,9 +88,9 @@ const ProductGridView = (props) => {
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid2>
             ))}
-        </Grid>
+        </Grid2>
     );
 };
 

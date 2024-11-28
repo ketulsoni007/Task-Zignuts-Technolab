@@ -23,8 +23,16 @@ const Header = () => {
     const handleClickAvatar = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleClose = (tabBtn) => {
+        if(tabBtn === 'profile'){
+            navigate('/profile');
+            setAnchorEl(null);
+        }else if(tabBtn === 'password'){
+            navigate('/password');
+            setAnchorEl(null);
+        }else{
+            setAnchorEl(null);
+        }
     };
     const handleLogout = () => {
         localStorage.removeItem('loggedInUser');
@@ -66,8 +74,8 @@ const Header = () => {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>Change Password</MenuItem>
+                    <MenuItem onClick={()=>handleClose('profile')}>Profile</MenuItem>
+                    <MenuItem onClick={()=>handleClose('password')}>Change Password</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </Toolbar>

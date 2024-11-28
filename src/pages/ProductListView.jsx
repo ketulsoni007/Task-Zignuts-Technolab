@@ -12,7 +12,6 @@ const ProductListView = (props) => {
         <ListItem key={product.id} sx={{ display: 'flex', marginBottom: 3 }} onClick={()=>navigate(`/product/${product.id}`)}>
           <Card sx={{ display: 'flex', width: '100%' }}>
             <Box sx={{ position: 'relative', width: '150px', height: '150px' }}>
-              {/* Heart Icon on Top Right */}
               <Box
                 sx={{
                   position: 'absolute',
@@ -56,8 +55,6 @@ const ProductListView = (props) => {
                 }}
               />
             </Box>
-
-            {/* Product Details */}
             <CardContent sx={{ flex: 1 }}>
               <Typography
                 gutterBottom

@@ -5,7 +5,7 @@ import { productDetailApi } from '../store/Slices/productSlice';
 import {
   Box,
   Typography,
-  Grid,
+  Grid2,
   Card,
   CardMedia,
   CardContent,
@@ -66,9 +66,9 @@ const ProductDetail = () => {
       </Typography>
       <Rating value={rating} readOnly precision={0.5} />
 
-      <Grid container spacing={3} mt={3}>
+      <Grid2 container spacing={3} mt={3}>
         {/* Left Side - Product Images */}
-        <Grid item xs={12} sm={6}>
+        <Grid2 item size={{xs:12,sm:6}}>
           <Card sx={{ boxShadow: 3 }}>
             <CardMedia
               component="img"
@@ -77,10 +77,10 @@ const ProductDetail = () => {
               sx={{ objectFit: 'contain', maxHeight: 400 }}
             />
           </Card>
-        </Grid>
+        </Grid2>
 
         {/* Right Side - Product Details */}
-        <Grid item xs={12} sm={6}>
+        <Grid2 item size={{xs:12,sm:6}}>
           <Card sx={{ padding: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -132,27 +132,27 @@ const ProductDetail = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
       {/* Additional Information */}
-      <Grid container spacing={3} mt={3}>
-        <Grid item xs={12} sm={6}>
+      <Grid2 container spacing={3} mt={3}>
+        <Grid2 item xs={12} sm={6}>
           <Paper sx={{ padding: 2, backgroundColor: blue[50] }}>
             <Typography variant="h6">Dimensions</Typography>
             <Typography variant="body2">Width: {dimensions.width} cm</Typography>
             <Typography variant="body2">Height: {dimensions.height} cm</Typography>
             <Typography variant="body2">Depth: {dimensions.depth} cm</Typography>
           </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6}>
+        </Grid2>
+        <Grid2 item size={{xs:12,sm:6}}>
           <Paper sx={{ padding: 2, backgroundColor: blue[50] }}>
             <Typography variant="h6">Shipping & Warranty</Typography>
             <Typography variant="body2">Shipping: {shippingInformation}</Typography>
             <Typography variant="body2">Warranty: {warrantyInformation}</Typography>
           </Paper>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
       {/* Return Policy */}
       <Box mt={3}>

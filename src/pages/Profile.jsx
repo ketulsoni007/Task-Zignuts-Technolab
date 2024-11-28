@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import CryptoJS from 'crypto-js';
-import { TextField, Button, Typography, Grid2, Card, CardContent, InputAdornment, IconButton } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { TextField, Button, Typography, Grid2, Card, CardContent } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required('First Name is required'),
@@ -24,7 +21,12 @@ const Profile = () => {
     const loggedInUserStorage = localStorage.getItem('loggedInUser');
     const authUser = loggedInUserStorage ? JSON.parse(loggedInUserStorage) : null;
 
-    const { control, handleSubmit, formState: { errors }, setError } = useForm({
+    if (!authUser) {
+        navigate('/signin'); // Redirect if no logged-in user is found
+        return null;
+    }
+
+    const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: {
             firstName: authUser?.firstName || '',
@@ -34,23 +36,28 @@ const Profile = () => {
         },
     });
 
-    const onSubmit = (values) => {
-        const { firstName, lastName, email, mobile } = values;
+    const onSubmit = (updatedData) => {
         const users = getUsersFromLocalStorage();
-        const existingUser = users.find((user) => user.email === email);
-        if (existingUser) {
-            setError('email', { type: 'manual', message: 'Email already exists' });
-            return;
-        }
-        const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
-        const newUser = { firstName, lastName, email, mobile, password: encryptedPassword };
-        if (users.length >= 5) {
-            users.shift();
-        }
-        users.push(newUser);
-        setUsersToLocalStorage(users);
-        setLoggedInUserToLocalStorage(newUser);
+        const updatedUsers = users.map((user) =>
+            user.email === authUser.email ? { ...user, ...updatedData } : user
+        );
+        setUsersToLocalStorage(updatedUsers);
+        setLoggedInUserToLocalStorage(updatedData);
+        alert('Profile updated successfully!');
         navigate('/');
+    };
+
+    const getUsersFromLocalStorage = () => {
+        const usersStorage = localStorage.getItem('users');
+        return usersStorage ? JSON.parse(usersStorage) : [];
+    };
+
+    const setUsersToLocalStorage = (users) => {
+        localStorage.setItem('users', JSON.stringify(users));
+    };
+
+    const setLoggedInUserToLocalStorage = (user) => {
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
     };
 
     return (
@@ -59,7 +66,7 @@ const Profile = () => {
                 <Card>
                     <CardContent sx={{ padding: 3 }}>
                         <Typography variant="h5" gutterBottom align="center">
-                            Signup
+                            Profile Update
                         </Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <Grid2 container spacing={2} direction="column">
@@ -139,15 +146,9 @@ const Profile = () => {
                                         fullWidth
                                         size="small"
                                     >
-                                        Signup
+                                        Update
                                     </Button>
                                 </Grid2>
-                                <Typography variant="body2" align="center">
-                                    Already have an account?{' '}
-                                    <NavLink to="/signin" replace>
-                                        Login here
-                                    </NavLink>
-                                </Typography>
                             </Grid2>
                         </form>
                     </CardContent>

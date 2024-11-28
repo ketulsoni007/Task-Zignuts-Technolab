@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { productCategoryApi, productListApi } from '../store/Slices/productSlice';
-import { Box, Grid, Card, CardContent, CardMedia, Typography, Pagination, ToggleButton, ToggleButtonGroup, TextField, InputAdornment, FormControl, InputLabel, Select, MenuItem, Avatar, Stack } from '@mui/material';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
-import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
+import { Box, Grid2, Typography, Pagination, ToggleButton, ToggleButtonGroup, TextField, InputAdornment, FormControl, InputLabel, Select, MenuItem, Avatar } from '@mui/material';
 import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import AppsIcon from '@mui/icons-material/Apps';
@@ -20,8 +16,8 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [category, setCategory] = useState('');
   const [productFilter, setProductFilter] = useState('');
-  const [heartClicked, setHeartClicked] = useState({}); // Track heart icon state per product
-  const [limit, setLimit] = useState(30); // Limit per page
+  const [heartClicked, setHeartClicked] = useState({});
+  const [limit, setLimit] = useState(30);
   const productList = useSelector((state) => state.product.productList);
   const productCategories = useSelector((state) => state.product.productCategories);
   const products = productList?.products || [];
@@ -59,8 +55,8 @@ const Product = () => {
 
   return (
     <Box sx={{ backgroundColor: '#faf8f5', p: 5, minHeight: '100vh' }}>
-      <Grid container justifyContent="center" spacing={2}>
-        <Grid item xs={12} sx={{ paddingLeft: '0px !important', mb: 2 }}>
+      <Grid2 container justifyContent="center" spacing={3}>
+        <Grid2 item size={{xs:12}} sx={{ paddingLeft: '0px !important', mb: 2 }}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
             <ToggleButtonGroup value={productView} exclusive onChange={handleAlignment} aria-label="text productView">
               <ToggleButton value="grid" aria-label="left aligned">
@@ -89,17 +85,17 @@ const Product = () => {
                   backgroundColor: '#FFF',
                   '& .MuiOutlinedInput-root': {
                     padding: '5px 10px',
-                    borderRadius: '30px', // Rounded corners for the search input
+                    borderRadius: '30px',
                   },
                   '& .MuiInputBase-input': {
-                    padding: '10px', // Padding inside the text field
+                    padding: '10px',
                   },
                 }}
               />
             </Box>
           </Box>
-        </Grid>
-        <Grid item xs={12} md={3} sx={{ backgroundColor: '#FFF', p: 3 }}>
+        </Grid2>
+        <Grid2 item size={{md:3,xs:12}} sx={{ backgroundColor: '#FFF', p: 3 }}>
           <Box>
             <Typography variant="h6" mb={3}>Filters</Typography>
             <Box>
@@ -127,9 +123,8 @@ const Product = () => {
               </FormControl>
             </Box>
           </Box>
-        </Grid>
-
-        <Grid item xs={12} md={9}>
+        </Grid2>
+        <Grid2 item size={{md:9,xs:12}}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} mb={3}>
             <Typography>Total {total} results</Typography>
             <FormControl>
@@ -166,8 +161,8 @@ const Product = () => {
               color="primary"
             />
           </Box>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Box>
   );
 };
