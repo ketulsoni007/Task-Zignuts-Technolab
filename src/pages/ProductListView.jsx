@@ -9,7 +9,7 @@ const ProductListView = (props) => {
   return (
     <List>
       {products.map((product) => (
-        <ListItem key={product.id} sx={{ display: 'flex', marginBottom: 3 }} onClick={()=>navigate(`/product/${product.id}`)}>
+        <ListItem key={product.id} sx={{ display: 'flex', marginBottom: 3, cursor:'pointer' }} onClick={()=>navigate(`/product/${product.id}`)}>
           <Card sx={{ display: 'flex', width: '100%' }}>
             <Box sx={{ position: 'relative', width: '150px', height: '150px' }}>
               <Box

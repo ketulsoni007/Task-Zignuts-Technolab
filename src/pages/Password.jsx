@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CryptoJS from 'crypto-js';
 
 const validationSchema = Yup.object({
     currentPassword: Yup.string().required('Current Password is required'),
@@ -33,11 +34,11 @@ const PasswordChange = () => {
     const authUser = loggedInUserStorage ? JSON.parse(loggedInUserStorage) : null;
 
     if (!authUser) {
-        navigate('/signin'); // Redirect if no logged-in user is found
+        navigate('/signin');
         return null;
     }
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, formState: { errors },setError } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: {
             currentPassword: '',
@@ -51,33 +52,25 @@ const PasswordChange = () => {
     const handleClickShowConfirmNewPassword = () => setShowConfirmNewPassword((prev) => !prev);
 
     const onSubmit = (data) => {
-        const { oldPassword, newPassword } = data;
-    
-        // Fetch stored user
+        const { currentPassword, newPassword } = data;
         const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
         if (!loggedInUser) {
-          setError('oldPassword', { type: 'manual', message: 'User not found!' });
-          return;
+            alert('User not found!');
+            return;
         }
-    
-        // Decrypt and compare old password
         const decryptedPassword = CryptoJS.AES.decrypt(
-          loggedInUser.password,
-          'secret-key'
+            loggedInUser.password,
+            'secret-key'
         ).toString(CryptoJS.enc.Utf8);
-    
-        if (decryptedPassword !== oldPassword) {
-          setError('oldPassword', { type: 'manual', message: 'Old Password is incorrect' });
-          return;
+        if (decryptedPassword !== currentPassword) {
+            setError('currentPassword', { type: 'manual', message: 'Current Password is incorrect' });
+            return;
         }
-    
-        // Encrypt new password and update user
         const encryptedNewPassword = CryptoJS.AES.encrypt(newPassword, 'secret-key').toString();
         loggedInUser.password = encryptedNewPassword;
-    
         localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
         alert('Password changed successfully!');
-      };
+    };
 
     return (
         <Grid2 container justifyContent="center" alignItems="center" sx={{ minHeight: 'calc(100vh - 70px)' }}>

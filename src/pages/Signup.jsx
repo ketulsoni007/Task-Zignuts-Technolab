@@ -7,6 +7,8 @@ import { TextField, Button, Typography, Grid2, Card, CardContent, InputAdornment
 import { NavLink, useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { UserLogIn } from '../store/Slices/productSlice';
+import { useDispatch } from 'react-redux';
 
 const validationSchema = Yup.object({
     firstName: Yup.string().required('First Name is required'),
@@ -40,6 +42,7 @@ const setUsersToLocalStorage = (users) => {
 
 const Signup = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { control, handleSubmit, formState: { errors }, setError } = useForm({
@@ -73,6 +76,7 @@ const Signup = () => {
         users.push(newUser);
         setUsersToLocalStorage(users);
         setLoggedInUserToLocalStorage(newUser);
+        dispatch(UserLogIn(true));
         navigate('/');
     };
 

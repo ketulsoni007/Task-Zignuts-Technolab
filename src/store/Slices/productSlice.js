@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from 'axios'; // Assuming axios is imported correctly
+import axios from 'axios';
 import config from "../../config";
 
 export const productListApi = createAsyncThunk('product/list', async ({ skip, limit, category, q }, thunkAPI) => {
@@ -13,8 +13,6 @@ export const productListApi = createAsyncThunk('product/list', async ({ skip, li
     const url = q
       ? `${config.API_URL}/search/?${queryParams}`
       : category ? `${config.API_URL}/category/${category}` : `${config.API_URL}/?${queryParams}`;
-
-    // Make the request to the API
     const response = await axios.get(url);
     if (response && response.status === 200) {
       return response.data;
@@ -71,6 +69,7 @@ const initialState = {
   productList: [],
   productCategories: [],
   productDetail: {},
+  userLogIn:false,
   isApiStatus: {
     productListApi: "",
     productCategoryApi: "",
@@ -83,6 +82,9 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    UserLogIn:(state,action)=>{
+      state.userLogIn = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -122,5 +124,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { reset } = productSlice.actions;
+export const { reset,UserLogIn } = productSlice.actions;
 export default productSlice.reducer;

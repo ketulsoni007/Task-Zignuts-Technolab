@@ -22,7 +22,7 @@ const Profile = () => {
     const authUser = loggedInUserStorage ? JSON.parse(loggedInUserStorage) : null;
 
     if (!authUser) {
-        navigate('/signin'); // Redirect if no logged-in user is found
+        navigate('/signin');
         return null;
     }
 
@@ -56,8 +56,10 @@ const Profile = () => {
         localStorage.setItem('users', JSON.stringify(users));
     };
 
-    const setLoggedInUserToLocalStorage = (user) => {
-        localStorage.setItem('loggedInUser', JSON.stringify(user));
+    const setLoggedInUserToLocalStorage = (updatedUser) => {
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+        const updatedLoggedInUser = { ...loggedInUser, ...updatedUser };
+        localStorage.setItem('loggedInUser', JSON.stringify(updatedLoggedInUser));
     };
 
     return (

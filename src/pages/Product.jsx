@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { productCategoryApi, productListApi } from '../store/Slices/productSlice';
-import { Box, Grid2, Typography, Pagination, ToggleButton, ToggleButtonGroup, TextField, InputAdornment, FormControl, InputLabel, Select, MenuItem, Avatar } from '@mui/material';
+import { Box, Grid2, Typography, Pagination, ToggleButton, ToggleButtonGroup, TextField, InputAdornment, FormControl, InputLabel, Select, MenuItem, Avatar, Skeleton } from '@mui/material';
 import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import AppsIcon from '@mui/icons-material/Apps';
@@ -20,6 +20,8 @@ const Product = () => {
   const [limit, setLimit] = useState(30);
   const productList = useSelector((state) => state.product.productList);
   const productCategories = useSelector((state) => state.product.productCategories);
+  const isApiStatus = useSelector((state) => state.product.isApiStatus);
+  const productLoading = isApiStatus?.productListApi === 'loading';
   const products = productList?.products || [];
   const total = productList?.total || 0;
 
@@ -56,7 +58,7 @@ const Product = () => {
   return (
     <Box sx={{ backgroundColor: '#faf8f5', p: 5, minHeight: '100vh' }}>
       <Grid2 container justifyContent="center" spacing={3}>
-        <Grid2 item size={{xs:12}} sx={{ paddingLeft: '0px !important', mb: 2 }}>
+        <Grid2 item size={{ xs: 12 }} sx={{ paddingLeft: '0px !important', mb: 2 }}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
             <ToggleButtonGroup value={productView} exclusive onChange={handleAlignment} aria-label="text productView">
               <ToggleButton value="grid" aria-label="left aligned">
@@ -95,7 +97,7 @@ const Product = () => {
             </Box>
           </Box>
         </Grid2>
-        <Grid2 item size={{md:3,xs:12}} sx={{ backgroundColor: '#FFF', p: 3 }}>
+        <Grid2 item size={{ md: 3, xs: 12 }} sx={{ backgroundColor: '#FFF', p: 3 }}>
           <Box>
             <Typography variant="h6" mb={3}>Filters</Typography>
             <Box>
@@ -113,7 +115,7 @@ const Product = () => {
                   {productCategories && productCategories?.length > 0 ? (
                     productCategories.map((item, i) => {
                       return (
-                        <MenuItem value={item}>{item}</MenuItem>
+                        <MenuItem value={item} key={i}>{item}</MenuItem>
                       )
                     })
                   ) : (
@@ -124,7 +126,7 @@ const Product = () => {
             </Box>
           </Box>
         </Grid2>
-        <Grid2 item size={{md:9,xs:12}}>
+        <Grid2 item size={{ md: 9, xs: 12 }}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} mb={3}>
             <Typography>Total {total} results</Typography>
             <FormControl>
@@ -134,6 +136,7 @@ const Product = () => {
                 id="limit"
                 value={limit}
                 label="Per Page"
+                size='small'
                 onChange={handleLimitChange}
                 sx={{ backgroundColor: '#FFF', minWidth: '100px' }}
               >
@@ -143,15 +146,41 @@ const Product = () => {
               </Select>
             </FormControl>
           </Box>
-
-          {products?.length > 0 ? (
-            productView === 'grid' ? <ProductGridView products={products} handleHeartClick={handleHeartClick} heartClicked={heartClicked} navigate={navigate} /> : <ProductListView products={products} handleHeartClick={handleHeartClick} heartClicked={heartClicked} navigate={navigate} />
-          ) : (
-            <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              <Avatar src={NoResultFound} sx={{ borderRadius: '0px', width: { lg: '550px', md: '450px', sm: '350px',xs:'250px' }, height: '100%',mb:3 }} />
-              <Typography>No Result Found</Typography>
+          {productLoading ? (
+            <Box>
+              {[...Array(3)].map((_, index) => {
+                return (
+                  <React.Fragment key={index}>
+                  {productView === 'grid' ? (
+                    <Grid2 container justifyContent="center" spacing={3}>
+                    <Grid2 item mb={2} size={{ lg:4, md: 6, xs: 12 }}>
+                      <Skeleton variant="rectangular" width="100%" height={200} sx={{ borderRadius: 2 }} />
+                    </Grid2>
+                    <Grid2 item mb={2} size={{ lg:4, md: 6, xs: 12 }}>
+                      <Skeleton variant="rectangular" width="100%" height={200} sx={{ borderRadius: 2 }} />
+                    </Grid2>
+                    <Grid2 item mb={2} size={{ lg:4, md: 6, xs: 12 }}>
+                      <Skeleton variant="rectangular" width="100%" height={200} sx={{ borderRadius: 2 }} />
+                    </Grid2>
+                    </Grid2>
+                  ) : (
+                    <Grid2 item mb={2}>
+                      <Skeleton variant="rectangular" width="100%" height={200} sx={{ borderRadius: 2 }} />
+                    </Grid2>
+                  )}
+                  </React.Fragment>
+                )
+              })}
             </Box>
-          )}
+          ) :
+            products?.length > 0 ? (
+              productView === 'grid' ? <ProductGridView products={products} handleHeartClick={handleHeartClick} heartClicked={heartClicked} navigate={navigate} /> : <ProductListView products={products} handleHeartClick={handleHeartClick} heartClicked={heartClicked} navigate={navigate} />
+            ) : (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+                <Avatar src={NoResultFound} sx={{ borderRadius: '0px', width: { lg: '550px', md: '450px', sm: '350px', xs: '250px' }, height: '100%', mb: 3 }} />
+                <Typography>No Result Found</Typography>
+              </Box>
+            )}
 
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
             <Pagination

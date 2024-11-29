@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { UserLogIn } from '../store/Slices/productSlice';
 
 const validationSchema = Yup.object({
     email: Yup.string()
@@ -58,6 +59,7 @@ const Login = () => {
                 return;
             }
             setLoggedInUserToLocalStorage(user);
+            dispatch(UserLogIn(true));
             navigate('/');
         } catch (error) {
             console.error('Error:', error.message);

@@ -1,43 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Button, Avatar, Menu, MenuItem, Box } from '@mui/material';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Avatar,
+    Menu,
+    MenuItem,
+    Box,
+    IconButton,
+    Tooltip,
+    Paper,
+    ListItemIcon,
+    Divider,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+} from '@mui/material';
+import { Logout } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
     const navigate = useNavigate();
     const [scrolling, setScrolling] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-
-    const [authUser, setAuthUser] = useState(() => {
-        const loggedInUser = localStorage.getItem('loggedInUser');
-        return loggedInUser ? JSON.parse(loggedInUser) : null;
-    });
+    const [authUser, setAuthUser] = useState(null);
+    const userLogIn = useSelector((state)=>state.product.userLogIn);
+    console.log('userLogIn: ', userLogIn);
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolling(window.scrollY > 50);
-        };
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (loggedInUser) {
+            setAuthUser(loggedInUser);
+        }
+    }, [userLogIn]);
+
+    useEffect(() => {
+        const handleScroll = () => setScrolling(window.scrollY > 50);
         setScrolling(window.scrollY > 50);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-    const handleClickAvatar = (event) => {
-        setAnchorEl(event.currentTarget);
+
+    const handleClickAvatar = (event) => setAnchorEl(event.currentTarget);
+    const handleCloseMenu = () => setAnchorEl(null);
+
+    const handleMenuAction = (action) => {
+        if (action === 'profile') navigate('/profile');
+        else if (action === 'password') navigate('/password');
+        setAnchorEl(null);
     };
-    const handleClose = (tabBtn) => {
-        if(tabBtn === 'profile'){
-            navigate('/profile');
-            setAnchorEl(null);
-        }else if(tabBtn === 'password'){
-            navigate('/password');
-            setAnchorEl(null);
-        }else{
-            setAnchorEl(null);
-        }
-    };
+
     const handleLogout = () => {
         localStorage.removeItem('loggedInUser');
         setAuthUser(null);
+        setAnchorEl(null);
+        navigate('/signin');
     };
+
     return (
         <AppBar
             position="sticky"
@@ -60,23 +83,90 @@ const Header = () => {
                     <Button color="primary">About</Button>
                     <Button color="primary">Contact</Button>
                 </Box>
-
                 {authUser ? (
-                    <Avatar onClick={handleClickAvatar} sx={{ cursor: 'pointer' }}>
-                        {authUser?.firstName?.charAt(0).toUpperCase()}
-                    </Avatar>
+                    <Tooltip title="Account settings">
+                        <IconButton onClick={handleClickAvatar} size="small">
+                            {authUser?.profilePicture ? (
+                                <Avatar
+                                    component={Paper}
+                                    elevation={2}
+                                    sx={{ width: 36, height: 36 }}
+                                    src={authUser.profilePicture}
+                                />
+                            ) : (
+                                <Avatar>
+                                    {authUser?.firstName?.charAt(0).toUpperCase()}
+                                </Avatar>
+                            )}
+                        </IconButton>
+                    </Tooltip>
                 ) : (
                     <Avatar onClick={() => navigate('/signin')} />
                 )}
-
                 <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
-                    onClose={handleClose}
+                    onClose={handleCloseMenu}
+                    PaperProps={{
+                        elevation: 4,
+                        sx: {
+                            mt: 1.5,
+                            '& .MuiAvatar-root': {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                            },
+                            '&::before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            },
+                        },
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
-                    <MenuItem onClick={()=>handleClose('profile')}>Profile</MenuItem>
-                    <MenuItem onClick={()=>handleClose('password')}>Change Password</MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    <MenuItem>
+                        <ListItem sx={{ p: 0 }}>
+                            <Avatar>
+                                {authUser?.firstName?.charAt(0)?.toUpperCase()}
+                            </Avatar>
+                            <ListItemText
+                                primary={`${authUser?.firstName} ${authUser?.lastName}`}
+                                secondary={authUser?.email}
+                                primaryTypographyProps={{ fontWeight: 'bold' }}
+                                secondaryTypographyProps={{ color: 'text.secondary' }}
+                            />
+                        </ListItem>
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={() => handleMenuAction('profile')}>
+                        <ListItemIcon>
+                            <AssignmentIndIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Profile" />
+                    </MenuItem>
+                    <MenuItem onClick={() => handleMenuAction('password')}>
+                        <ListItemIcon>
+                            <LockOpenIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Change Password" />
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                            <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
                 </Menu>
             </Toolbar>
         </AppBar>

@@ -10,7 +10,7 @@ const ProductGridView = (props) => {
         <Grid2 container spacing={3}>
             {products.map((product) => (
                 <Grid2 item size={{ xs: 12, sm: 6, lg: 4 }} md={4} key={product.id}>
-                    <Card onClick={() => navigate(`/product/${product.id}`)}>
+                    <Card onClick={() => navigate(`/product/${product.id}`)} sx={{cursor:'pointer'}}>
                         <Box sx={{ position: 'relative' }}>
                             <Box
                                 sx={{
