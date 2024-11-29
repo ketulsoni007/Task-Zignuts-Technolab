@@ -29,7 +29,6 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [authUser, setAuthUser] = useState(null);
     const userLogIn = useSelector((state)=>state.product.userLogIn);
-    console.log('userLogIn: ', userLogIn);
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
