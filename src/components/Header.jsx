@@ -21,19 +21,32 @@ import { Logout } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserLogIn } from '../store/Slices/productSlice';
 
 const Header = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [scrolling, setScrolling] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [authUser, setAuthUser] = useState(null);
-    const userLogIn = useSelector((state)=>state.product.userLogIn);
+    const userLogIn = useSelector((state) => state.product.userLogIn);
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-        if (loggedInUser) {
+        if (loggedInUser && !userLogIn) {
             setAuthUser(loggedInUser);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userLogIn?.email) {
+            setAuthUser(userLogIn);
+            setTimeout(() => {
+                if (authUser?.email) {
+                    dispatch(UserLogIn({}));
+                }
+            }, 500);
         }
     }, [userLogIn]);
 
@@ -77,10 +90,20 @@ const Header = () => {
                 </Typography>
                 <Box sx={{ display: { md: 'block', sm: 'none', xs: 'none' }, mr: 4 }}>
                     <Button color="primary" onClick={() => navigate('/')}>Home</Button>
-                    <Button color="primary">Shop</Button>
-                    <Button color="primary">Blog</Button>
-                    <Button color="primary">About</Button>
-                    <Button color="primary">Contact</Button>
+                    {authUser ? (
+                        <>
+                            <Button color="primary">Shop</Button>
+                            <Button color="primary">Blog</Button>
+                            <Button color="primary">About</Button>
+                            <Button color="primary">Contact</Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button color="primary" onClick={() => navigate('/signin')}>SignIn</Button>
+                            <Button color="primary" onClick={() => navigate('/signup')}>Register</Button>
+                        </>
+                    )}
+
                 </Box>
                 {authUser ? (
                     <Tooltip title="Account settings">

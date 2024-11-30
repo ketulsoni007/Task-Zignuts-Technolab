@@ -69,7 +69,7 @@ const initialState = {
   productList: [],
   productCategories: [],
   productDetail: {},
-  userLogIn:false,
+  userLogIn:{},
   isApiStatus: {
     productListApi: "",
     productCategoryApi: "",

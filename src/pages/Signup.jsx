@@ -76,7 +76,7 @@ const Signup = () => {
         users.push(newUser);
         setUsersToLocalStorage(users);
         setLoggedInUserToLocalStorage(newUser);
-        dispatch(UserLogIn(true));
+        dispatch(UserLogIn(newUser));
         navigate('/');
     };
 

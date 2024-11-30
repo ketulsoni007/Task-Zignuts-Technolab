@@ -59,7 +59,7 @@ const Login = () => {
                 return;
             }
             setLoggedInUserToLocalStorage(user);
-            dispatch(UserLogIn(true));
+            dispatch(UserLogIn(user));
             navigate('/');
         } catch (error) {
             console.error('Error:', error.message);
